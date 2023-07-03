@@ -1,3 +1,12 @@
+from bs4 import BeautifulSoup
+import requests
+import re
+import concurrent.futures
+from concurrent import futures
+from geopy.distance import geodesic
+from datetime import datetime
+
+
 def get_distance_from_city_centre(latitude, longitude):
 
     # Temple Bar coordinates
