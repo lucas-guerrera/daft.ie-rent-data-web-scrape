@@ -1,13 +1,11 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup
 import requests
 import re
 import multiprocessing
 from concurrent import futures
 import concurrent.futures
-import time
 from geopy.distance import geodesic
 from datetime import datetime
 
