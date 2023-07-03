@@ -11,6 +11,10 @@ import time
 from geopy.distance import geodesic
 from datetime import datetime
 
+# CSV desktop path
+csv_path = r'C:\Users\Odafaz\Desktop\Daft Project'
+csv_file = 'listing.csv'
+
 def get_distance_from_city_centre(latitude, longitude):
 
     # Temple Bar coordinates
@@ -264,4 +268,4 @@ labels = ['< 1 km', '1 - 3 km', '3 - 5 km', '5 - 7 km', '7 - 10 km', '10 - 15 km
 df['Distance Category'] = pd.cut(df['Distance From City Centre'], bins=bins, labels=labels)
 
 # Save DataFrame to CSV
-df.to_csv(r'C:\Users\Odafaz\Desktop\Daft Project\listing.csv', encoding='utf-8')
+df.to_csv(csv_path + '\\' + csv_file, encoding='utf-8')
