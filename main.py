@@ -2,9 +2,6 @@ import pandas as pd
 import numpy as np
 from bs4 import BeautifulSoup
 import requests
-import re
-import multiprocessing
-from concurrent import futures
 import concurrent.futures
 from geopy.distance import geodesic
 from datetime import datetime
