@@ -11,7 +11,7 @@ import time
 from geopy.distance import geodesic
 from datetime import datetime
 
-# CSV desktop path
+# CSV desktop path and file name
 csv_path = r'C:\Users\Odafaz\Desktop\Daft Project'
 csv_file = 'listing.csv'
 
