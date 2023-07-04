@@ -20,8 +20,8 @@ df.drop(df[df['Rent'] == 'Ignore'].index, inplace=True)
 df['Date Entered/Renewed'] = pd.to_datetime(df['Date Entered/Renewed'], format ='%d/%m/%Y')
 df['Views'] = df['Views'].str.replace(',', '').astype(int)
 df['Rent'] = pd.to_numeric(df['Rent'].astype(str).str.replace(',', ''), errors='coerce')
-#df['Bedroom']= df['Bedroom'].astype(int)
-#df['Bathroom']= df['Bathroom'].astype(int)
+df['Bedroom']= df['Bedroom'].astype(int)
+df['Bathroom']= df['Bathroom'].astype(int)
 
 # Define the distance groups
 bins = [0, 1, 3, 5, 7, 10, 15, 20, 30, 40, 50, float('inf')]
