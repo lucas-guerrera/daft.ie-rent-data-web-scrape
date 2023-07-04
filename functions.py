@@ -80,6 +80,17 @@ def scrape_property(url):
     listing_html = requests.get('https://www.daft.ie' + url)
     soup = BeautifulSoup(listing_html.content, 'lxml')
 
+    # Ensuring all element variables are None to avoid potential UnboundLocalErrors
+    property_type_element = None
+    rent_value_element = None
+    property_statistics_element = None
+    property_ber_element = None
+    property_address_element = None
+    property_google_url_element = None
+    property_specifications_element = None
+    bedroom_card_element = None 
+    bathroom_card_element = None
+
     # Get property type (Apartment, House, Studio,...)
     property_type_element = soup.find('p', class_='TitleBlock__CardInfoItem-sc-1avkvav-9 cKZYAr')
     if property_type_element is not None:
@@ -127,13 +138,26 @@ def scrape_property(url):
     else:
         property_latitude, property_longitude, property_distance_from_city_centre = '', '', ''
 
+    # Get property specifications such as number of bedrooms, bathrooms, furnished, lease from Property Overview 
     property_specifications_element = soup.find('div', {"data-testid" : "overview"})
     if property_specifications_element is not None:
         property_specifications = property_specifications_element.find_all('li')
         property_bedroom, property_bathroom, property_available_from, property_furnished, property_lease = get_property_specifications(property_specifications)
+
+        # If a property is not a Studio and is missing the number of bedrooms or bathrooms in the Property Overview section
+        if (property_bedroom == 0 or property_bathroom == 0) and property_type != 'Studio':
+            bedroom_card_element = soup.find('p', {"data-testid" : "beds"})
+            bathroom_card_element = soup.find('p', {"data-testid" : "baths"})
+            if bedroom_card_element is not None:  
+                property_bedroom = int(re.match(r'\d+', bedroom_card_element.text).group())
+            elif bathroom_card_element is not None:
+                property_bathroom = int(re.match(r'\d+', bathroom_card_element.text).group())
+            else:
+                property_bedroom = 0
+                property_bathroom = 0
     else:
-        property_bedroom = 'NA'
-        property_bathroom = 'NA'
+        property_bedroom = 0
+        property_bathroom = 0
         property_available_from = 'NA'
         property_furnished = 'NA'
         property_lease = 'NA'
