@@ -20,7 +20,7 @@ The project's primary goal is not to analyze current rental rates but to provide
 
 After the collection of 20 consecutive days of data (06/07/2023 - 26/07/2023), the idea is to train a linear regression model to predict rental prices based on key features like number of bedrooms, number of bathrooms and distance from city centre.
 
-## Common questions people may have
+## Common questions you may have
 
 Question: What if someone lists the rent one day and updates it the other? How does it handle duplicate data?
 Answer: The script checks whether a listing's daft_id is already stored in the CSV file. If it is, the script compares the current rent with the previously recorded rent. If the rent has changed, the updated listing is added to the CSV file. If the listing remains the same, with no rent change or address update, it will be appended in the CSV file.
