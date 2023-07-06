@@ -18,6 +18,8 @@ This project aims to provide insights into the current rental market by analyzin
 
 The project's primary goal is not to analyze current rental rates but to provide insights into the rental prices of existing listings on Daft.ie. As such, the data collected may not reflect the average rent in Dublin. However, it can offer valuable information about the rental prices for properties available on the market moving forward.
 
+After the collection of 20 consecutive days of data (06/07/2023 - 26/07/2023), the idea is to train a linear regression model to predict rental prices based on key features like number of bedrooms, number of bathrooms and distance from city centre.
+
 ## Common questions people may have
 
 Question: What if someone lists the rent one day and updates it the other? How does it handle duplicate data?
