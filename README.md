@@ -23,9 +23,11 @@ After the collection of 20 consecutive days of data (06/07/2023 - 26/07/2023), t
 ## Common questions you may have
 
 Question: What if someone lists the rent one day and updates it the other? How does it handle duplicate data?
+
 Answer: The script checks whether a listing's daft_id is already stored in the CSV file. If it is, the script compares the current rent with the previously recorded rent. If the rent has changed, the updated listing is added to the CSV file. If the listing remains the same, with no rent change or address update, it will be appended in the CSV file.
 
 Question: How is distance from city centre calculated?
+
 Answer: The distance from the city centre is calculated based on the straight-line distance from Temple Bar, a renowned pub situated in the heart of Dublin. This distance measurement serves as a radius from Temple Bar and provides a general understanding of each property's proximity to the city centre.
 
 
