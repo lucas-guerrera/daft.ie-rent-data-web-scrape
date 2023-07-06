@@ -5,6 +5,7 @@ import concurrent.futures
 from concurrent import futures
 from geopy.distance import geodesic
 from datetime import datetime
+import hashlib
 
 
 def get_distance_from_city_centre(latitude, longitude):
@@ -70,7 +71,7 @@ def get_actual_rent_value(rent_value):
             if 'per month' in rent_value:
                 return cleaned_real_rent
             elif 'per week' in rent_value:
-                return (cleaned_real_rent * 52) / 12
+                return (cleaned_real_rent * 52) / 12 # Transforms weekly into monthly rent
             else:
                 return 0.0
     else:
@@ -91,6 +92,13 @@ def scrape_property(url):
     bedroom_card_element = None 
     bathroom_card_element = None
 
+    property_daft_id_element = soup.find('p', class_='DaftIDText__StyledDaftIDParagraph-vbn7aa-0 glbfmV')
+    if property_daft_id_element is not None:
+        property_daft_id = property_daft_id_element.text.split(":")[1].strip()
+    else:
+        return
+
+
     # Get property type (Apartment, House, Studio,...)
     property_type_element = soup.find('p', class_='TitleBlock__CardInfoItem-sc-1avkvav-9 cKZYAr')
     if property_type_element is not None:
@@ -105,7 +113,7 @@ def scrape_property(url):
     else:
         property_rent_value = '0.0'
 
-    # Get property view and entered/renewed date
+    # Get property views and entered/renewed date
     property_statistics_element = soup.find_all('p', class_ = 'Statistics__StyledLabel-sc-15tgae4-1 iDjRee')
     if property_statistics_element is not None:
         property_date = property_statistics_element[0].text
@@ -162,24 +170,30 @@ def scrape_property(url):
         property_furnished = 'NA'
         property_lease = 'NA'
 
+    # Create an unique columm based on type, num_bedroom, num_bathroom, address and rent value
+    property_id = property_daft_id + str(property_rent_value)
+    # Hash property_id
+    hashed_property_id = hashlib.sha256(property_id.encode()).hexdigest()
 
-    return {'Date Entered/Renewed': property_date,
-            'Views': property_views,
-            'Type': property_type,
-            'Rent': property_rent_value,
-            'Bedroom': property_bedroom,
-            'Bathroom': property_bathroom,
-            'Available From': property_available_from,
-            'Furnished': property_furnished,
-            'Lease' : property_lease,
-            'BER Rating': property_ber_rating,
-            'Address': property_address,
-            'Distance From City Centre': property_distance_from_city_centre,
-            'Latitude': property_latitude,
-            'Longitude': property_longitude,
-            'Region': property_address.split(",")[-1],
-            'Url': 'https://www.daft.ie' + url,
-            'Input Date': datetime.now().strftime('%d/%m/%Y')}
+    return {'daft_id': property_daft_id,
+            'date_entered': property_date,
+            'views': property_views,
+            'type': property_type,
+            'rent': property_rent_value,    
+            'num_bedroom': property_bedroom,
+            'num_bathroom': property_bathroom,
+            'available_from': property_available_from,
+            'furnished': property_furnished,
+            'lease' : property_lease,
+            'ber_rating': property_ber_rating,
+            'address': property_address,
+            'distance_from_city_centre': property_distance_from_city_centre,
+            'latitude': property_latitude,
+            'longitude': property_longitude,
+            'region': property_address.split(",")[-1],
+            'url': 'https://www.daft.ie' + url,
+            'input_date': datetime.now().strftime('%d/%m/%Y'),
+            'property_id': hashed_property_id}
 
 
 def get_listing_urls(url):
@@ -210,7 +224,7 @@ def get_properties_urls(num_properties=20):
     num_properties = int(search_results.find('div', class_='styles__SearchResultsHeader-sc-1t5gb6v-2 iiBovf').h1.text.split()[0])
     listing_urls = []
     
-    # Determine the number of pages required
+    # Determine total number of pages
     page_size = 20
     num_pages = (num_properties + page_size - 1) // page_size
     

@@ -1,5 +1,7 @@
 from functions import *
 import pandas as pd
+import os
+import datetime
 
 # CSV desktop path and file name
 csv_path = r'C:\Users\Odafaz\Desktop\Daft Project'
@@ -11,23 +13,27 @@ properties_final_info_list = get_properties_info(properties_list)
 # Filter out None or empty dictionaries
 filtered_property_info_final = [d for d in properties_final_info_list if d is not None and bool(d)]
 
-# Create a DataFrame from the filtered list of dictionaries
 df = pd.DataFrame(filtered_property_info_final)
-df.dropna(subset=['Rent'], inplace=True) 
-df['Region'] = df['Region'].str.extract(r'(Dublin \d+)', expand=False)
-df.drop(df[df['Rent'] == 'Ignore'].index, inplace=True)
 
-df['Date Entered/Renewed'] = pd.to_datetime(df['Date Entered/Renewed'], format ='%d/%m/%Y')
-df['Views'] = df['Views'].str.replace(',', '').astype(int)
-df['Rent'] = pd.to_numeric(df['Rent'].astype(str).str.replace(',', ''), errors='coerce')
-df['Bedroom']= df['Bedroom'].astype(int)
-df['Bathroom']= df['Bathroom'].astype(int)
+# Remove duplicates based on 'property_id'
+df.drop_duplicates(subset='property_id', inplace=True)
+df.reset_index(drop=True, inplace=True)
 
-# Define the distance groups
-bins = [0, 1, 3, 5, 7, 10, 15, 20, 30, 40, 50, float('inf')]
-# Create labels for the bins
-labels = ['< 1 km', '1 - 3 km', '3 - 5 km', '5 - 7 km', '7 - 10 km', '10 - 15 km', '15 - 20 km', '20 - 30 km', '30 - 40 km', '40 - 50 km', '> 50 km']
-df['Distance Category'] = pd.cut(df['Distance From City Centre'], bins=bins, labels=labels)
 
-# Save DataFrame to CSV
-df.to_csv(csv_path + '\\' + csv_file, encoding='utf-8')
+# Check if CSV file exists
+csv_filepath = os.path.join(csv_path, csv_file)
+if os.path.exists(csv_filepath):
+    # Read existing property_ids from CSV
+    existing_ids = pd.read_csv(csv_filepath)['property_id']
+
+    # Filter DataFrame to keep only unique property_ids
+    df = df[~df['property_id'].isin(existing_ids)]
+    
+
+#df.to_csv(csv_filepath, encoding='utf-8')
+# Append filtered DataFrame to CSV file
+df.to_csv(csv_filepath, mode='a', index=False, header=False, encoding='utf-8')
+
+# Save run log in a txt file
+file = open(r'C:\Users\Odafaz\Desktop\Daft Project\task.txt','a')
+file.write(f'{datetime.datetime.now()}\n')
