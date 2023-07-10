@@ -1,4 +1,4 @@
-# Daft.ie Dublin Rental Property Project
+# Introduction
 
 Welcome to my Python project, a web scraping application designed to collect and store data from Daft.ie, Ireland's largest and most visited Real Estate website. This project focuses on gathering essential information about Dublin's rental properties listed on the website, including rent prices, number of bedrooms, bathrooms, latitude, longitude, and distance from the city center.
 
